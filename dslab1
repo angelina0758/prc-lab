@@ -1,0 +1,83 @@
+/*write a simple program in c that reads integers from a file and sorts it and gives back the mode from the file*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_NUMBERS 1000
+
+// Function prototypes
+void bubbleSort(int arr[], int n);
+int findMode(int arr[], int n);
+
+int main() {
+    int numbers[MAX_NUMBERS];
+    int count = 0;
+    FILE *file;
+    char filename[] = "numbers.txt"; // Replace with your file name
+
+    // Open the file
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        return EXIT_FAILURE;
+    }
+
+    // Read integers from the file
+    while (fscanf(file, "%d", &numbers[count]) == 1) {
+        count++;
+        if (count >= MAX_NUMBERS) {
+            printf("Warning: Maximum number of entries reached.\n");
+            break;
+        }
+    }
+    fclose(file);
+
+    // Sort the integers
+    bubbleSort(numbers, count);
+
+    // Find and print the mode
+    int mode = findMode(numbers, count);
+    printf("The mode of the integers is: %d\n", mode);
+
+    return EXIT_SUCCESS;
+}
+// Function to perform bubble sort on an array of integers
+void bubbleSort(int arr[], int n) {
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+// Function to find the mode in a sorted array
+int findMode(int arr[], int n) {
+    if (n == 0) {
+        printf("No data to process.\n");
+        return -1; // Return -1 if no mode is found
+    }
+    int maxCount = 0;
+    int mode = arr[0];
+    int currentCount = 1;
+
+    for (int i = 1; i < n; i++) {
+        if (arr[i] == arr[i - 1]) {
+            currentCount++;
+        } else {
+            if (currentCount > maxCount) {
+                maxCount = currentCount;
+                mode = arr[i - 1];
+            }
+            currentCount = 1; // Reset count for new number
+        }
+    }
+    // Check the last number
+    if (currentCount > maxCount) {
+        mode = arr[n - 1];
+    }
+
+    return mode;
+}
