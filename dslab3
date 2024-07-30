@@ -1,0 +1,122 @@
+
+//sum of two sparse matrix
+#include <stdio.h>
+typedef struct 
+{
+    int coef;
+    int exp;
+}Poly;
+
+int findSum(Poly P[],int astart,int afinish,int bstart,int bfinish);
+void printSum(Poly P[],int astart,int afinish,int bstart,int bfinish,int sstart,int sfinish);
+
+int main(){
+    Poly P[100];
+    int n1,n2,index=0;
+    int astart=0,afinish,bstart,bfinish,avail,sstart,sfinish;
+    printf("Number of term in first polynomial\n");
+    scanf("%d",&n1);
+
+    printf("Enter the coeffecient and power resp of each term of first polynomial\n");
+    for(int i=0;i<n1;i++){
+        scanf("%d",&P[index].coef);
+        scanf("%d",&P[index++].exp);
+
+    }
+    afinish=index-1;
+    bstart=index;
+    printf("Number of term in first polynomial\n");
+    scanf("%d",&n2);
+    printf("Enter the coeffecient and power of each teram of second polynomial\n");
+    for(int i=0;i<n2;i++){
+        scanf("%d",&P[index].coef);
+        scanf("%d",&P[index++].exp);
+
+    }
+    bfinish=index-1;
+    sstart=index;
+    sfinish=findSum(P,astart,afinish,bstart,bfinish);
+    printSum(P,astart,afinish,bstart,bfinish,sstart,sfinish);
+
+}
+//finding sum
+int findSum(Poly P[],int astart,int afinish,int bstart,int bfinish){
+    int apos=astart;
+    int bpos=bstart;
+    int avail=bfinish+1;
+    while(apos<=afinish && bpos<=bfinish){
+        if(P[apos].exp>P[bpos].exp){
+            P[avail].exp=P[apos].exp;
+            P[avail].coef=P[apos].coef;
+            avail++;
+            apos++;
+
+        }else if(P[bpos].exp>P[apos].exp){
+            P[avail].exp=P[bpos].exp;
+            P[avail].coef=P[bpos].coef;
+            avail++;
+            bpos++;
+        }else{
+            int n=P[apos].coef+P[bpos].coef;
+            if(n!=0){
+                P[avail].coef=n;
+                P[avail].exp=P[apos].exp;
+                avail++;
+            }
+            
+                apos++,bpos++;
+        }
+    }
+    if(apos<=afinish){
+        for(int i=apos;i<=afinish;i++){
+            P[avail].exp=P[i].exp;
+            P[avail].coef=P[i].coef;
+            avail++;
+            
+        }
+    }
+    if(bpos<=bfinish){
+        for(int i=bpos;i<=bfinish;i++){
+            P[avail].exp=P[i].exp;
+            P[avail].coef=P[i].coef;
+            avail++;
+            
+        }
+    }
+    int sfinish=avail-1;
+    return sfinish; 
+
+}
+
+void printSum(Poly P[],int astart,int afinish,int bstart,int bfinish,int sstart,int sfinish){
+    
+    printf("The Sum is : \n");
+    
+    for(int i=astart;i<=afinish;i++){
+        if(i>astart){
+            printf("+");
+        }
+       printf("%dx^%d",P[i].coef,P[i].exp);
+    }
+
+    printf(" + ");
+
+    for(int i=bstart;i<=bfinish;i++){
+        if(i>bstart){
+            printf("+");
+        }
+       printf("%dx^%d",P[i].coef,P[i].exp);
+    }
+
+    printf(" = ");
+
+    
+    for(int i=sstart;i<=sfinish;i++){
+        if(i>sstart){
+            printf("+");
+        }
+       printf("%dx^%d",P[i].coef,P[i].exp);
+    }
+    
+
+}
