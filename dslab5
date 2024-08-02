@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[100];
+    char stack[100];
+    int top = -1;
+
+    printf("Enter a string of parentheses, curly braces, and square brackets: ");
+    scanf("%s", str);
+
+    for (int i = 0; i < strlen(str); i++) {
+        char ch = str[i];
+
+        if (ch == '(' || ch == '{' || ch == '[') {
+            stack[++top] = ch;
+        } else {
+            if (top == -1) {
+                printf("Invalid\n");
+                return 0;
+            }
+
+            char topChar = stack[top--];
+
+            if ((ch == ')' && topChar != '(') ||
+                (ch == '}' && topChar != '{') ||
+                (ch == ']' && topChar != '[')) {
+                printf("Invalid\n");
+                return 0;
+            }
+        }
+    }
+
+    if (top == -1) {
+        printf("Valid\n");
+    } else {
+        printf("Invalid\n");
+    }
+
+    return 0;
+}
