@@ -1,0 +1,255 @@
+//type 1 with some complexity ***type 2 in image format
+#include<stdio.h>
+typedef struct {
+    int row,col;
+    float value;
+}tuple;
+
+tuple T[100];
+tuple Trans[100];
+tuple Sum[100];
+
+int cvtToTuple(float M[10][10],int r,int c,int size);
+void displayTuple(float M[10][10],float N[10][10],int r,int c,int size);
+void transpose(float M[10][10],int r,int c);
+void sum(float M[10][10],float N[10][10],int r1,int c1,int r2,int c2);
+
+
+int main(){
+    int r1,c1,r2,c2,size;
+    float A[10][10],B[10][10];
+    printf("Enter the row(r1) and Column(c1) of first matrix\n");
+    scanf("%d %d",&r1,&c1);
+    printf("Enter the matrix\n");
+    for(int i=0;i<r1;i++){
+        for(int j=0;j<c1;j++){
+            scanf("%f",&A[i][j]);
+        }
+    }
+    printf("Enter the row(r2) and Column(c2) of second matrix\n");
+    scanf("%d %d",&r2,&c2);
+    printf("Enter the matrix\n");
+    for(int i=0;i<r2;i++){
+        for(int j=0;j<c2;j++){
+            scanf("%f",&B[i][j]);
+        }
+    }
+    printf("Matrix Succesfully entered\n");
+    int n=0,option;
+    char ch;
+
+    while(1){
+        if(n>0){
+            printf("Do you want to continue(y/n)\n");
+            scanf(" %c",&ch);
+            if(ch=='n'){
+                printf("Exiting the menu");
+                return 0;
+            }
+            
+        }
+        n++;
+        //menu
+        printf("Choose an option\n"); 
+
+        printf("Option 1\n");
+        printf("Convert matrix to tuple form\n");
+
+        printf("Option 2\n");
+        printf("Display the matrix in tuple form\n");
+
+        printf("Option 3\n");
+        printf("Find the transpose of a matrix represented in tuple form \n");
+
+        printf("Option 4 \n");
+        printf("Find the sum of the two matrices in tuple form \n");
+
+        scanf("%d",&option);
+        
+        
+        switch(option) {
+            case 1: size=0;
+                    size=cvtToTuple(A,r1,c1,size);
+                    size=cvtToTuple(A,r2,c2,size);
+                    printf("Converted to Tuple\n");
+                    break;
+            case 2: size=0;                                     
+                    displayTuple(A,B,r1,c1,size);                                     
+                    break;
+            case 3: printf("Transpose Matrix in Tuple form:\n");
+                    
+                    printf("Transpose of Matrix A\n");
+                    transpose(A,r1,c1);
+                    printf("Transpose of Matrix B\n");
+                    transpose(B,r2,c2);
+                    break;
+            case 4: if(r1==r2 && c1==c2){
+                      size=0;
+                      sum(A,B,r1,c1,r2,c2);
+                      break;
+
+                    }else{
+                        printf("The Matrixes cannot be added\n");
+                    }
+                    
+            default:
+                  printf("Invalid  Option\n");        
+        }
+        
+    }
+    return 0;
+
+}
+
+int cvtToTuple(float M[10][10],int r,int c,int size){
+    int index=size+1;
+    float count=0;
+    
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            
+            if(M[i][j]!=0){
+                T[index].row=i;
+                T[index].col=j;
+                T[index].value=M[i][j];
+                index++;
+                count++;
+            }
+
+        }
+    }
+    T[size].row=r;
+    T[size].col=c;
+    T[size].value=count;
+    size=index;
+    return size;
+
+}
+
+void displayTuple(float M[10][10],float N[10][10],int r,int c,int size){
+    printf("Tuple form:\n");
+    int n=cvtToTuple(M,r,c,size);
+    printf("Matrix A\n");
+    for(int i=0;i<n;i++){
+        printf("%d  %d  %.2f\n",T[i].row,T[i].col,T[i].value);
+    }
+    printf("Matrix B\n");
+    int p=cvtToTuple(N,r,c,n);
+    for(int i=n;i<p;i++){
+        printf("%d  %d  %.2f\n",T[i].row,T[i].col,T[i].value);
+    }
+
+}
+
+void transpose(float M[10][10],int r,int c){
+    int index=1;
+    float count=0;
+    
+    for(int i=0;i<c;i++){
+        for(int j=0;j<r;j++){
+            
+            if(M[i][j]!=0){
+                Trans[index].row=j;
+                Trans[index].col=i;
+                Trans[index].value=M[i][j];
+                index++;
+                count++;
+            }
+
+        }
+    }
+    Trans[0].row=c;
+    Trans[0].col=r;
+    Trans[0].value=count;
+
+    int n=index;
+    for(int i=0;i<n;i++){
+        printf("%d  %d  %.2f \n",Trans[i].row,Trans[i].col,Trans[i].value);
+    }
+    
+
+}
+
+void sum(float M[10][10],float N[10][10],int r1,int c1,int r2,int c2){
+    int n=cvtToTuple(M,r1,c1,0);
+    int p=cvtToTuple(N,r2,c2,n);
+    T[p].row=r1;
+    T[p].col=c1;
+    int apos=1;
+    int bpos=n+1;
+    int sstart=p,avail=p+1;
+    float count=0;
+    while(apos<n && bpos<p){
+        if(T[apos].row<T[bpos].row){
+
+            T[avail].row=T[apos].row;
+            T[avail].col=T[apos].col;
+            T[avail].value=T[apos].value;
+            apos++;
+
+        }else if(T[apos].row>T[bpos].row){
+
+            T[avail].row=T[bpos].row;
+            T[avail].col=T[bpos].col;
+            T[avail].value=T[bpos].value;
+            bpos++;
+
+        }else{
+            if(T[apos].col==T[bpos].col){
+                
+                T[avail].row=T[bpos].row;
+                T[avail].col=T[bpos].col;
+                T[avail].value=T[apos].value+T[bpos].value;
+                apos++,bpos++;
+
+            }else{
+            
+                if(T[apos].row<T[bpos].row){
+
+                    T[avail].row=T[apos].row;
+                    T[avail].col=T[apos].col;
+                    T[avail].value=T[apos].value;
+                    apos++;
+
+                }else{
+
+                    T[avail].row=T[bpos].row;
+                    T[avail].col=T[bpos].col;
+                    T[avail].value=T[bpos].value;
+                    bpos++;
+
+                }
+
+            }
+            
+        }
+        avail++;
+        count++;
+    }    
+        
+    if(apos<n){
+        for(int i=apos;i<n;i++){
+            T[avail].row=T[i].row;
+            T[avail].col=T[i].col;
+            T[avail].value=T[i].value;
+            avail++;
+            apos++;
+            count++;
+        }
+    }    
+    if(bpos<n){
+        for(int j=bpos;j<n+p;j++){
+            T[avail].row=T[j].row;
+            T[avail].col=T[j].col;
+            T[avail].value=T[j].value;
+            avail++;
+            count++;
+        }
+    }  
+    printf("%d",&count);
+    T[sstart].value=count;
+
+    printf("The Sum of matrix in tuple form : \n");
+    for(int i=p;i<avail;i++){
+        printf("%d  %d  %.2f\n",T[i].row,T[i].col,T[i].value);
+}  }  
